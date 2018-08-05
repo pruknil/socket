@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="off">
-    <!-- 日志文件目录和压缩文件 -->
     <Properties>
         <Property name="fileName">/tmp/logs</Property>
         <Property name="fileGz">/tmp/logs/7z</Property>

@@ -23,4 +23,26 @@ public class ChatHeartbeatHandler extends ChannelInboundHandlerAdapter{
 			super.userEventTriggered(ctx, evt);
 		}
 	}
+	
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ByteBuf inBuffer = (ByteBuf) msg;
+
+        String received = inBuffer.toString(CharsetUtil.UTF_8);
+        System.out.println("Server received: " + received);
+
+        ctx.write(Unpooled.copiedBuffer("Hello " + received, CharsetUtil.UTF_8));
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
+                .addListener(ChannelFutureListener.CLOSE);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
 }

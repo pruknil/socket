@@ -23,16 +23,14 @@ public class ChatServerInitializer extends ChannelInitializer<Channel>{
 	@Override
 	protected void initChannel(Channel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
-		//处理日志
 		pipeline.addLast(new LoggingHandler(LogLevel.INFO));
 		
-		//处理心跳
 		pipeline.addLast(new IdleStateHandler(0, 0, 1800, TimeUnit.SECONDS));
 		pipeline.addLast(new ChatHeartbeatHandler());
 		
-		pipeline.addLast(new HttpServerCodec());
-		pipeline.addLast(new ChunkedWriteHandler());
-		pipeline.addLast(new HttpObjectAggregator(64 * 1024));
+		//pipeline.addLast(new HttpServerCodec());
+		//pipeline.addLast(new ChunkedWriteHandler());
+		//pipeline.addLast(new HttpObjectAggregator(64 * 1024));
 		//pipeline.addLast(new HttpRequestHandler("/ws"));
 		//pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
 		//pipeline.addLast(new TextWebSocketFrameHandler(group));		
