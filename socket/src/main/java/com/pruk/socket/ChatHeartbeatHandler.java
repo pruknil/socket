@@ -11,7 +11,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 
 public class ChatHeartbeatHandler extends ChannelInboundHandlerAdapter{
-	private Logger logger = LogManager.getLogger();
+	private Logger logger = LogManager.getLogger(this.getClass());
 	private final ByteBuf HEARTBEAT_SEQUENCE = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("HB",CharsetUtil.UTF_8));
 	
 	@Override
