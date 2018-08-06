@@ -5,18 +5,18 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
-public class ChatServerInitializer extends ChannelInitializer<Channel>{
+public class SocketInitializer extends ChannelInitializer<Channel>{
 	private final ChannelGroup group;
 	
-	public ChatServerInitializer(ChannelGroup group) {
+	public SocketInitializer(ChannelGroup group) {
 		this.group = group;
 	}
 	
@@ -26,7 +26,18 @@ public class ChatServerInitializer extends ChannelInitializer<Channel>{
 		pipeline.addLast(new LoggingHandler(LogLevel.INFO));
 		
 		pipeline.addLast(new IdleStateHandler(0, 0, 1800, TimeUnit.SECONDS));
-		pipeline.addLast(new ChatHeartbeatHandler());
+		
+	    pipeline.addLast("length-decoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 2)); 
+	    pipeline.addLast("bytearray-decoder", new ByteArrayDecoder());
+	    pipeline.addLast("length-encoder", new LengthFieldPrepender(2));  
+	    pipeline.addLast("bytearray-encoder", new ByteArrayEncoder());
+		pipeline.addLast(new HeartbeatHandler());
+		pipeline.addLast(new LengthFieldHandler());
+		//pipeline.addLast(new SocketHandler());
+
+		
+		//pipeline.addLast(new OutBound());
+		
 		
 		//pipeline.addLast(new HttpServerCodec());
 		//pipeline.addLast(new ChunkedWriteHandler());

@@ -15,15 +15,15 @@ import io.netty.channel.ChannelFuture;
 public class NettyWebSocketServerApplication implements CommandLineRunner{
 
 	@Autowired
-	private ChatServer chatServer;
+	private SocketServer chatServer;
 
     public static void main(String[] args) {
         SpringApplication.run(NettyWebSocketServerApplication.class, args);
     }
     
     @Bean
-    public ChatServer chatServer() {
-    	return new ChatServer();
+    public SocketServer chatServer() {
+    	return new SocketServer();
     }
     
 	@Override

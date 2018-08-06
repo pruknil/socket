@@ -10,20 +10,20 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 
-public class ChatHeartbeatHandler extends ChannelInboundHandlerAdapter{
+public class SocketHandler extends ChannelInboundHandlerAdapter{
 	private Logger logger = LogManager.getLogger(this.getClass());
-	private final ByteBuf HEARTBEAT_SEQUENCE = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("HB",CharsetUtil.UTF_8));
-	
-	@Override
-	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-		if(evt instanceof IdleStateEvent) {
-			logger.info("====>Heartbeat: greater than {}", 180);
-			ctx.writeAndFlush(HEARTBEAT_SEQUENCE.duplicate()).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-		}else {
-			super.userEventTriggered(ctx, evt);
-		}
-	}
-	
+//	private final ByteBuf HEARTBEAT_SEQUENCE = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Rejected",CharsetUtil.UTF_8));
+//	
+//	@Override
+//	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+//		if(evt instanceof IdleStateEvent) {
+//			logger.info("====>Heartbeat: greater than {}", 180);
+//			ctx.writeAndFlush(HEARTBEAT_SEQUENCE.duplicate()).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+//		}else {
+//			super.userEventTriggered(ctx, evt);
+//		}
+//	}
+//	
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf inBuffer = (ByteBuf) msg;
@@ -35,6 +35,12 @@ public class ChatHeartbeatHandler extends ChannelInboundHandlerAdapter{
     }
 
     @Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Connected!");
+        ctx.fireChannelActive();
+	}
+
+	@Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
                 .addListener(ChannelFutureListener.CLOSE);
